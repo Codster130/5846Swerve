@@ -91,7 +91,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getAngleRadians(){
-        return Math.toRadians(Math.abs(gyro.getAngle()%360));
+        return Math.toRadians(gyro.getAngle()%360);
     }
 
     @Override
