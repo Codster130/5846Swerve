@@ -90,6 +90,10 @@ public class Swerve extends SubsystemBase {
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
     }
 
+    public double getAngleRadians(){
+        return Math.toRadians(Math.abs(gyro.getAngle()%360));
+    }
+
     @Override
     public void periodic(){
         swerveOdometry.update(getYaw(), getStates());  
