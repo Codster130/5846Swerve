@@ -52,7 +52,7 @@ public class TeleopSwerve extends CommandBase {
         yAxis = -xAxis*Math.sin(s_Swerve.getYaw().getRadians())+yAxis*Math.cos(s_Swerve.getYaw().getRadians());
         xAxis = temp;
 
-        SmartDashboard.putNumber("Gyro (radians)", s_Swerve.getYaw().getRadians());
+        SmartDashboard.putNumber("Gyro (radians)", s_Swerve.gyro.getAngle());
         SmartDashboard.updateValues();
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
