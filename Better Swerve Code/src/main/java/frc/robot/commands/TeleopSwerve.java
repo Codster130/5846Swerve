@@ -48,11 +48,11 @@ public class TeleopSwerve extends CommandBase {
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
 
         /* Field oriented drive */
-        double temp = xAxis*Math.cos(s_Swerve.getYaw().getRadians())+yAxis*Math.sin(s_Swerve.getYaw().getRadians());
-        yAxis = -xAxis*Math.sin(s_Swerve.getYaw().getRadians())+yAxis*Math.cos(s_Swerve.getYaw().getRadians());
+        double temp = xAxis*Math.cos(s_Swerve.getAngleRadians())+yAxis*Math.sin(s_Swerve.getAngleRadians());
+        yAxis = -xAxis*Math.sin(s_Swerve.getAngleRadians())+yAxis*Math.cos(s_Swerve.getAngleRadians());
         xAxis = temp;
 
-        SmartDashboard.putNumber("Gyro (radians)", s_Swerve.gyro.getAngle());
+        SmartDashboard.putNumber("Gyro (radians)", s_Swerve.getAngleRadians());
         SmartDashboard.updateValues();
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
