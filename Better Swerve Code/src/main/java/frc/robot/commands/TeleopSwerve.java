@@ -46,6 +46,12 @@ public class TeleopSwerve extends CommandBase {
         xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
 
+        /* Field oriented drive */
+        double temp = xAxis*Math.cos(s_Swerve.getYaw().getRadians())+yAxis*Math.sin(s_Swerve.getYaw().getRadians());
+        yAxis = -xAxis*Math.sin(s_Swerve.getYaw().getRadians())+yAxis*Math.cos(s_Swerve.getYaw().getRadians());
+        xAxis = temp;
+
+
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
         s_Swerve.drive(translation, rotation, fieldRelative, openLoop);
