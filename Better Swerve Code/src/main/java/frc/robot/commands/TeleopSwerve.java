@@ -4,6 +4,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
@@ -51,6 +52,8 @@ public class TeleopSwerve extends CommandBase {
         yAxis = -xAxis*Math.sin(s_Swerve.getYaw().getRadians())+yAxis*Math.cos(s_Swerve.getYaw().getRadians());
         xAxis = temp;
 
+        SmartDashboard.putNumber("Gyro (radians)", s_Swerve.getYaw().getRadians());
+        SmartDashboard.updateValues();
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
