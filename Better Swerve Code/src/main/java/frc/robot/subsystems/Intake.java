@@ -4,23 +4,33 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 
-  DoubleSolenoid intakeSolenoid = null;
+  DoubleSolenoid intakeSolenoid;
+  Compressor compressor;
 
   /** Creates a new Intake. */
   public Intake() {
-    intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,0,1);
+    intakeSolenoid = new DoubleSolenoid(13, PneumaticsModuleType.REVPH,0,1);
+    intakeSolenoid.set(Value.kReverse);
+
+    compressor = new Compressor(13, PneumaticsModuleType.REVPH);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public boolean getCompressor(){
+    return compressor.enabled();
   }
 
   public void extendIntake(){

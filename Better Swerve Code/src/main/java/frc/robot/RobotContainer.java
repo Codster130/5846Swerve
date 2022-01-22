@@ -33,8 +33,8 @@ public class RobotContainer {
 
   /* Driver Buttons */
   private final JoystickButton dY = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton dB = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton dX = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton dB = new JoystickButton(driver, 1);
+  private final JoystickButton dX = new JoystickButton(driver, 2);
   private final JoystickButton dA = new JoystickButton(driver, XboxController.Button.kA.value);
   private final JoystickButton dLB = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton dRB = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
@@ -60,7 +60,7 @@ public class RobotContainer {
   public RobotContainer() {
     boolean fieldRelative = true;
     boolean openLoop = true;
-    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
+    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, m_intake, driver, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -75,8 +75,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
     dY.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
-    dB.whenPressed(new DeployIntake());
-    dX.whenPressed(new RetractIntake());
+    //dB.whenPressed(new DeployIntake());
+    //dX.whenPressed(new RetractIntake());
   }
 
   /**
