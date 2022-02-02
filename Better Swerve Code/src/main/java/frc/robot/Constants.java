@@ -9,13 +9,27 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
-    public static final double stickDeadband = 0.2;
+    public static final double stickDeadband = 0.1;
+
+    /* Intake Constants */
+    public static int intakeMotorID = 0; //TODO: Set the correct ID
+
+    /* Uptake Constants */
+    public static int leftAgitatorMotorID = 0; //TODO: Set the correct ID
+    public static int rightAgitatorMotorID = 0; //TODO: Set the correct ID
+    public static int frontBeltMotorID = 0; //TODO: Set the correct ID
+    public static int backBeltMotorID = 0; //TODO: Set the correct ID
+    public static int leftFeedMotorID = 0; //TODO: Set the correct ID
+    public static int rightFeedMotorID = 0; //TODO: Set the correct ID
+
+    /* Shooter Constants */
+    public static int flywheelMotorID = 0; //TODO: Set the correct ID
 
     public static final class Swerve {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(21.73);
+        public static final double trackWidth = Units.inchesToMeters(24);
         public static final double wheelBase = Units.inchesToMeters(21.73);
         public static final double wheelDiameter = Units.inchesToMeters(3.94);
         public static final double wheelCircumference = wheelDiameter * Math.PI;
