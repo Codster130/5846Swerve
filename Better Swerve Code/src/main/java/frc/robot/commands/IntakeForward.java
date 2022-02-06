@@ -10,8 +10,8 @@ import frc.robot.RobotContainer;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class RetractIntake extends InstantCommand {
-  public RetractIntake() {
+public class IntakeForward extends InstantCommand {
+  public IntakeForward() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_Intake);
   }
@@ -19,6 +19,6 @@ public class RetractIntake extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.m_Intake.retractIntake();
+    RobotContainer.m_Intake.setIntakePower(.5);
   }
 }

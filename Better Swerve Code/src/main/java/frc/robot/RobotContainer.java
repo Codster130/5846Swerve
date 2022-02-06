@@ -72,7 +72,7 @@ public class RobotContainer {
 
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
-  public static Intake m_intake = new Intake();
+  public static Intake m_Intake = new Intake();
   Trajectory trajectory = new Trajectory();
 
 
@@ -81,7 +81,7 @@ public class RobotContainer {
   public RobotContainer() {
     boolean fieldRelative = true;
     boolean openLoop = true;
-    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
+    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, m_Intake, driver, manipulator, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -96,8 +96,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
     dY.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
-    dB.whenPressed(new DeployIntake());
-    dX.whenPressed(new RetractIntake());
+    mB.whenPressed(new DeployIntake());
+    mX.whenPressed(new RetractIntake());
+    dX.whenPressed(new IntakeForward());
   }
 
   /**

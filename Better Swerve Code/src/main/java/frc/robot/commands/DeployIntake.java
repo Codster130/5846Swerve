@@ -16,12 +16,12 @@ import frc.robot.RobotContainer;
 public class DeployIntake extends InstantCommand {
   public DeployIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.m_intake);
+    addRequirements(RobotContainer.m_Intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.m_intake.extendIntake();
+    RobotContainer.m_Intake.extendIntake();
   }
 }
