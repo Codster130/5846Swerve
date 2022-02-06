@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -16,12 +18,12 @@ import frc.robot.Constants;
 public class Intake extends SubsystemBase {
 
   DoubleSolenoid intakeSolenoid = null;
-  TalonFX intakeMotor = null;
+  CANSparkMax intakeMotor = null;
 
   /** Creates a new Intake. */
   public Intake() {
     intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,0,1);
-    intakeMotor = new TalonFX(Constants.intakeMotorID);
+    intakeMotor = new CANSparkMax(Constants.intakeMotorID, MotorType.kBrushless);
   }
 
   @Override
@@ -30,7 +32,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakePower(double power){
-    intakeMotor.set(ControlMode.PercentOutput, power);
+    intakeMotor.set(power);
   }
 
   public void extendIntake(){

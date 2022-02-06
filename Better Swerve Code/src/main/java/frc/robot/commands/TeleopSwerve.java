@@ -1,8 +1,11 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -15,7 +18,9 @@ public class TeleopSwerve extends CommandBase {
     private boolean openLoop;
     
     private Swerve s_Swerve;
-    private Joystick controller;
+    private Intake m_Intake;
+    private Joystick drive;
+    private Joystick manip;
     private int translationAxis;
     private int strafeAxis;
     private int rotationAxis;
@@ -23,11 +28,14 @@ public class TeleopSwerve extends CommandBase {
     /**
      * Driver control
      */
-    public TeleopSwerve(Swerve s_Swerve, Joystick controller, int translationAxis, int strafeAxis, int rotationAxis, boolean fieldRelative, boolean openLoop) {
+    public TeleopSwerve(Swerve s_Swerve, Intake m_Intake, Joystick drive, Joystick manip, int translationAxis, int strafeAxis, int rotationAxis, boolean fieldRelative, boolean openLoop) {
         this.s_Swerve = s_Swerve;
+        this.m_Intake = m_Intake;
+        addRequirements(m_Intake);
         addRequirements(s_Swerve);
 
-        this.controller = controller;
+        this.drive = drive;
+        this.manip = manip;
         this.translationAxis = translationAxis;
         this.strafeAxis = strafeAxis;
         this.rotationAxis = rotationAxis;
@@ -42,17 +50,25 @@ public class TeleopSwerve extends CommandBase {
 
     @Override
     public void execute() {
-        double yAxis = -controller.getRawAxis(translationAxis);
-        double xAxis = -controller.getRawAxis(strafeAxis);
-        double rAxis = -controller.getRawAxis(rotationAxis);
+        double d_yAxis = -drive.getRawAxis(translationAxis);
+        double d_xAxis = -drive.getRawAxis(strafeAxis);
+        double d_rAxis = -drive.getRawAxis(rotationAxis);
         
         /* Deadbands */
-        yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;
-        xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
-        rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
+        d_yAxis = (Math.abs(d_yAxis) < Constants.stickDeadband) ? 0 : d_yAxis;
+        d_xAxis = (Math.abs(d_xAxis) < Constants.stickDeadband) ? 0 : d_xAxis;
+        d_rAxis = (Math.abs(d_rAxis) < Constants.stickDeadband) ? 0 : d_rAxis;
 
-        translation = new Translation2d(yAxis, xAxis).times(Constants.Swerve.maxSpeed);
-        rotation = rAxis * Constants.Swerve.maxAngularVelocity;
+        if(drive.getRawButtonPressed(1)){
+            m_Intake.setIntakePower(.5);
+        }else if(drive.getRawButtonPressed(3)){
+            m_Intake.setIntakePower(-.5);
+        }else{
+            m_Intake.setIntakePower(0);
+        }
+
+        translation = new Translation2d(d_yAxis, d_xAxis).times(Constants.Swerve.maxSpeed);
+        rotation = d_rAxis * Constants.Swerve.maxAngularVelocity;
         s_Swerve.drive(translation, rotation, fieldRelative, openLoop);
         
     }
