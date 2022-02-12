@@ -6,6 +6,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -18,7 +19,6 @@ public class TeleopSwerve extends CommandBase {
     private boolean openLoop;
     
     private Swerve s_Swerve;
-    private Intake m_Intake;
     private Joystick drive;
     private Joystick manip;
     private int translationAxis;
@@ -30,8 +30,6 @@ public class TeleopSwerve extends CommandBase {
      */
     public TeleopSwerve(Swerve s_Swerve, Intake m_Intake, Joystick drive, Joystick manip, int translationAxis, int strafeAxis, int rotationAxis, boolean fieldRelative, boolean openLoop) {
         this.s_Swerve = s_Swerve;
-        this.m_Intake = m_Intake;
-        addRequirements(m_Intake);
         addRequirements(s_Swerve);
 
         this.drive = drive;
@@ -44,9 +42,7 @@ public class TeleopSwerve extends CommandBase {
     }
 
     @Override
-    public void initialize(){
-
-    }
+    public void initialize(){}
 
     @Override
     public void execute() {
@@ -59,17 +55,10 @@ public class TeleopSwerve extends CommandBase {
         d_xAxis = (Math.abs(d_xAxis) < Constants.stickDeadband) ? 0 : d_xAxis;
         d_rAxis = (Math.abs(d_rAxis) < Constants.stickDeadband) ? 0 : d_rAxis;
 
-        if(drive.getRawButtonPressed(1)){
-            m_Intake.setIntakePower(.5);
-        }else if(drive.getRawButtonPressed(3)){
-            m_Intake.setIntakePower(-.5);
-        }else{
-            m_Intake.setIntakePower(0);
-        }
-
         translation = new Translation2d(d_yAxis, d_xAxis).times(Constants.Swerve.maxSpeed);
         rotation = d_rAxis * Constants.Swerve.maxAngularVelocity;
         s_Swerve.drive(translation, rotation, fieldRelative, openLoop);
-        
+        SmartDashboard.updateValues();
+
     }
 }

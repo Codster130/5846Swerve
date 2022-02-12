@@ -51,7 +51,7 @@ public class RobotContainer {
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
   /* Driver Buttons */
-  private final JoystickButton dY = new JoystickButton(driver, XboxController.Button.kY.value);
+  public final JoystickButton dY = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton dB = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton dX = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton dA = new JoystickButton(driver, XboxController.Button.kA.value);
@@ -71,7 +71,7 @@ public class RobotContainer {
   private final JoystickButton mLS = new JoystickButton(manipulator, XboxController.Button.kLeftStick.value);
 
   /* Subsystems */
-  private final Swerve s_Swerve = new Swerve();
+  public final Swerve s_Swerve = new Swerve();
   public static Intake m_Intake = new Intake();
   Trajectory trajectory = new Trajectory();
 
@@ -82,6 +82,7 @@ public class RobotContainer {
     boolean fieldRelative = true;
     boolean openLoop = true;
     s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, m_Intake, driver, manipulator, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
+    m_Intake.setDefaultCommand(new TeleopIntake(s_Swerve, m_Intake, driver));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -96,9 +97,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
     dY.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
-    mB.whenPressed(new DeployIntake());
-    mX.whenPressed(new RetractIntake());
-    dX.whenPressed(new IntakeForward());
+    dX.whenPressed(new ToggleIntake());
+    // dA.whenPressed(new InstantCommand(() -> m_Intake.setIntakePower(.25)));
+    // dB.whenPressed(new InstantCommand(() -> m_Intake.setIntakePower(0)));
   }
 
   /**

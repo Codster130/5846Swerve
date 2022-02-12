@@ -12,18 +12,19 @@ public final class Constants {
     public static final double stickDeadband = 0.1;
 
     /* Intake Constants */
-    public static int intakeMotorID = 20; //TODO: Set the correct ID
+    public static int intakeMotorID = 19; //TODO: Set the correct ID
+
+    public static int intakeRelativeSpeed = 10; //Desired relative tangental speed of the intake (ft/sec)
 
     /* Uptake Constants */
-    public static int leftAgitatorMotorID = 13; //TODO: Set the correct ID
-    public static int rightAgitatorMotorID =14; //TODO: Set the correct ID
-    public static int frontBeltMotorID = 15; //TODO: Set the correct ID
-    public static int backBeltMotorID = 16; //TODO: Set the correct ID
-    public static int leftFeedMotorID = 17; //TODO: Set the correct ID
-    public static int rightFeedMotorID = 18; //TODO: Set the correct ID
+    public static int pushUpMotorID = 13; //TODO: Set the correct ID
+    public static int frontBeltMotorID = 14; //TODO: Set the correct ID
+    public static int backBeltMotorID = 15; //TODO: Set the correct ID
+    public static int leftFeedMotorID = 16; //TODO: Set the correct ID
+    public static int rightFeedMotorID = 17; //TODO: Set the correct ID
 
     /* Shooter Constants */
-    public static int flywheelMotorID = 19; //TODO: Set the correct ID
+    public static int flywheelMotorID = 18; //TODO: Set the correct ID
 
     public static final class Swerve {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
