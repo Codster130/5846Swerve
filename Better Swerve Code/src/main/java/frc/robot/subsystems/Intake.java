@@ -17,13 +17,17 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
 
-  DoubleSolenoid intakeSolenoid = null;
+  DoubleSolenoid leftIntakeSolenoid = null;
+  DoubleSolenoid rightIntakeSolenoid = null;
   CANSparkMax intakeMotor = null;
 
   /** Creates a new Intake. */
   public Intake() {
-    intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,0,1);
+    leftIntakeSolenoid = new DoubleSolenoid(13, PneumaticsModuleType.REVPH, 0, 1);
+    rightIntakeSolenoid = new DoubleSolenoid(13, PneumaticsModuleType.REVPH, 2, 3);
     intakeMotor = new CANSparkMax(Constants.intakeMotorID, MotorType.kBrushless);
+    leftIntakeSolenoid.set(Value.kReverse);
+    rightIntakeSolenoid.set(Value.kReverse);
   }
 
   @Override
@@ -35,12 +39,13 @@ public class Intake extends SubsystemBase {
     intakeMotor.set(power);
   }
 
-  public void extendIntake(){
-    intakeSolenoid.set(Value.kForward);
-  } 
+  public void toggleIntake(){
+    leftIntakeSolenoid.toggle();
+    rightIntakeSolenoid.toggle();
+  }
 
-  public void retractIntake(){
-    intakeSolenoid.set(Value.kReverse);
+  public double getIntakeVelocity(){
+    return intakeMotor.getEncoder().getVelocity();
   }
 
 }

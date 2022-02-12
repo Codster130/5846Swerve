@@ -4,14 +4,15 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeForward extends InstantCommand {
-  public IntakeForward() {
+public class ToggleIntake extends InstantCommand {
+  public ToggleIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_Intake);
   }
@@ -19,6 +20,6 @@ public class IntakeForward extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.m_Intake.setIntakePower(.5);
+    RobotContainer.m_Intake.toggleIntake();
   }
 }

@@ -13,8 +13,7 @@ import frc.robot.Constants;
 public class Uptake extends SubsystemBase {
   
   //Left and right agitators (bottom wheels entering into uptake)
-  VictorSPX leftAgitatorMotor;
-  VictorSPX rightAgitatorMotor;
+  VictorSPX pushUpMotor;
 
   //Front and back belt drivers
   VictorSPX frontBeltMotor;
@@ -29,7 +28,6 @@ public class Uptake extends SubsystemBase {
     configureUptakeMotors();
     setVoltageCompensation(12, true);
 
-    leftAgitatorMotor.follow(rightAgitatorMotor);
     backBeltMotor.follow(frontBeltMotor);
     leftFeedMotor.follow(rightFeedMotor);
   }
@@ -41,8 +39,7 @@ public class Uptake extends SubsystemBase {
 
   public void configureUptakeMotors(){
     //Initialize uptake motors
-    leftAgitatorMotor = new VictorSPX(Constants.leftAgitatorMotorID);
-    rightAgitatorMotor = new VictorSPX(Constants.rightAgitatorMotorID);
+    pushUpMotor = new VictorSPX(Constants.pushUpMotorID);
     frontBeltMotor = new VictorSPX(Constants.frontBeltMotorID);
     backBeltMotor = new VictorSPX(Constants.backBeltMotorID);
     leftFeedMotor = new VictorSPX(Constants.leftFeedMotorID);
@@ -50,11 +47,8 @@ public class Uptake extends SubsystemBase {
   }
 
   public void setVoltageCompensation(int voltage, boolean enable){
-    leftAgitatorMotor.configVoltageCompSaturation(voltage);
-    leftAgitatorMotor.enableVoltageCompensation(enable);
-
-    rightAgitatorMotor.configVoltageCompSaturation(voltage);
-    rightAgitatorMotor.enableVoltageCompensation(enable);
+    pushUpMotor.configVoltageCompSaturation(voltage);
+    pushUpMotor.enableVoltageCompensation(enable);
 
     frontBeltMotor.configVoltageCompSaturation(voltage);
     frontBeltMotor.enableVoltageCompensation(enable);
@@ -69,8 +63,8 @@ public class Uptake extends SubsystemBase {
     rightFeedMotor.enableVoltageCompensation(enable);
   }
 
-  public void setAgitatorPower(double power){
-    rightAgitatorMotor.set(ControlMode.PercentOutput, power);
+  public void setPushUpPower(double power){
+    pushUpMotor.set(ControlMode.PercentOutput, power);
   }
 
   public void setBeltPower(double power){
