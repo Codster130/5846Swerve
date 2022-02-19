@@ -72,7 +72,10 @@ public class RobotContainer {
 
   /* Subsystems */
   public final Swerve s_Swerve = new Swerve();
-  public static Intake m_Intake = new Intake();
+  public final Intake m_Intake = new Intake();
+  public final Uptake m_Uptake = new Uptake();
+  public final Shooter m_Shooter = new Shooter();
+  public final Vision m_Vision = new Vision();
   Trajectory trajectory = new Trajectory();
 
 
@@ -81,8 +84,10 @@ public class RobotContainer {
   public RobotContainer() {
     boolean fieldRelative = true;
     boolean openLoop = true;
-    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, m_Intake, driver, manipulator, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
-    m_Intake.setDefaultCommand(new TeleopIntake(s_Swerve, m_Intake, driver));
+    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, manipulator, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
+    m_Intake.setDefaultCommand(new TeleopIntake(s_Swerve, m_Intake, driver, manipulator));
+    m_Shooter.setDefaultCommand(new TeleopShooter(m_Shooter, m_Vision, driver, manipulator));
+
 
     // Configure the button bindings
     configureButtonBindings();
@@ -97,9 +102,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
     dY.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
-    dX.whenPressed(new ToggleIntake());
-    // dA.whenPressed(new InstantCommand(() -> m_Intake.setIntakePower(.25)));
-    // dB.whenPressed(new InstantCommand(() -> m_Intake.setIntakePower(0)));
+    dX.whenPressed(new InstantCommand(() -> m_Intake.toggleIntake()));
   }
 
   /**

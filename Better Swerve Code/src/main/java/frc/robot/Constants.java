@@ -25,6 +25,7 @@ public final class Constants {
 
     /* Shooter Constants */
     public static int flywheelMotorID = 18; //TODO: Set the correct ID
+    public static int turretMotorID = 20; //TODO: Set the correct ID
 
     public static final class Swerve {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-

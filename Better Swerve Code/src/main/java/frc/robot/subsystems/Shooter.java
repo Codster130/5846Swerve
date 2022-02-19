@@ -15,12 +15,15 @@ import frc.robot.Constants;
 public class Shooter extends SubsystemBase {
   
   CANSparkMax flywheelMotor;
+  CANSparkMax turretMotor;
   RelativeEncoder flywheelEncoder;
 
   /** Creates a new Shooter. */
   public Shooter() {
     flywheelMotor = new CANSparkMax(Constants.flywheelMotorID, MotorType.kBrushless);
+    turretMotor = new CANSparkMax(Constants.turretMotorID, MotorType.kBrushless);
     flywheelMotor.enableVoltageCompensation(12);
+    turretMotor.enableVoltageCompensation(12);
     flywheelEncoder = flywheelMotor.getEncoder();
   }
 
