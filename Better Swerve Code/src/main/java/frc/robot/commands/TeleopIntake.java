@@ -19,16 +19,18 @@ public class TeleopIntake extends CommandBase {
   private Intake m_Intake;
   private Swerve s_Swerve;
   private Joystick driver;
+  private Joystick manip;
   private boolean intakeIsRunning;
   private double intakeAngularVelocity;
   private double drivetrainForwardVelocity;
   private double relativeVelocity;
   private double power;
   /** Creates a new TeleopIntake. */
-  public TeleopIntake(Swerve s_Swerve, Intake m_Intake, Joystick driver) {
+  public TeleopIntake(Swerve s_Swerve, Intake m_Intake, Joystick driver, Joystick manip) {
     this.s_Swerve = s_Swerve;
     this.m_Intake = m_Intake;
     this.driver = driver;
+    this.manip = manip;
     intakeIsRunning = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Intake);
