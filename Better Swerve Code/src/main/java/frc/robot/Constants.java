@@ -25,7 +25,10 @@ public final class Constants {
 
     /* Shooter Constants */
     public static int flywheelMotorID = 18; //TODO: Set the correct ID
+    public static int backspinMotorID = 21; //TODO: Set the correct ID
     public static int turretMotorID = 20; //TODO: Set the correct ID
+
+    public static double turretAccelRate = 42;
 
     public static final class Swerve {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
@@ -97,7 +100,7 @@ public final class Constants {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 3;
             public static final int canCoderID = 2;
-            public static final double angleOffset = 94;
+            public static final double angleOffset = 90;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -107,7 +110,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 5;
-            public static final double angleOffset = 10.45;
+            public static final double angleOffset = 75;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -117,7 +120,7 @@ public final class Constants {
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 12;
             public static final int canCoderID = 11;
-            public static final double angleOffset = -60;
+            public static final double angleOffset = 291;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -127,7 +130,7 @@ public final class Constants {
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 9;
             public static final int canCoderID = 8;
-            public static final double angleOffset = 156;
+            public static final double angleOffset = 105;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
