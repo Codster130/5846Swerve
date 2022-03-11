@@ -12,21 +12,33 @@ public final class Constants {
     public static final double stickDeadband = 0.1;
 
     /* Intake Constants */
-    public static int intakeMotorID = 19; //TODO: Set the correct ID
+    public static int intakeMotorID = 20; //TODO: Set the correct ID
 
     public static int intakeRelativeSpeed = 10; //Desired relative tangental speed of the intake (ft/sec)
+    public static int intakeStallCurrentLimit = 20;
+    public static int intakeFreeCurrentLimit = 12;
 
     /* Uptake Constants */
-    public static int pushUpMotorID = 13; //TODO: Set the correct ID
     public static int frontBeltMotorID = 14; //TODO: Set the correct ID
+
     public static int backBeltMotorID = 15; //TODO: Set the correct ID
-    public static int leftFeedMotorID = 16; //TODO: Set the correct ID
-    public static int rightFeedMotorID = 17; //TODO: Set the correct ID
+    public static int beltStallCurrentLimit = 40;
+    public static int beltFreeCurrentLimit = 25;
+
+    public static int backFeedMotorID = 16; //TODO: Set the correct ID
+    public static int frontFeedMotorID = 17; //TODO: Set the correct ID
+    public static int feedStallCurrentLimit = 15;
+    public static int feedFreeCurrentLimit = 10;
 
     /* Shooter Constants */
     public static int flywheelMotorID = 18; //TODO: Set the correct ID
     public static int backspinMotorID = 21; //TODO: Set the correct ID
-    public static int turretMotorID = 20; //TODO: Set the correct ID
+    public static int flywheelStallCurrentLimit = 45;
+    public static int flywheelFreeCurrentLimit = 30;
+
+    public static int turretMotorID = 19; //TODO: Set the correct ID
+    public static int turretStallCurrentLimit = 45;
+    public static int turretFreeCurrentLimit = 30;
 
     public static double turretAccelRate = 42;
 
@@ -52,13 +64,13 @@ public final class Constants {
                 new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
 
         /* Swerve Current Limiting */
-        public static final int angleContinuousCurrentLimit = 25;
+        public static final int angleContinuousCurrentLimit = 20;
         public static final int anglePeakCurrentLimit = 40;
         public static final double anglePeakCurrentDuration = 0.1;
         public static final boolean angleEnableCurrentLimit = true;
 
         public static final int driveContinuousCurrentLimit = 35;
-        public static final int drivePeakCurrentLimit = 60;
+        public static final int drivePeakCurrentLimit = 40;
         public static final double drivePeakCurrentDuration = 0.1;
         public static final boolean driveEnableCurrentLimit = true;
 

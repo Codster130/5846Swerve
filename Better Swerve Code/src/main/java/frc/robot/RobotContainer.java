@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -43,7 +45,7 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
   /* Controllers */
   private final Joystick driver = new Joystick(0);
-  private final Joystick manipulator = new Joystick(1);
+  private final Joystick manip = new Joystick(1);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -51,32 +53,40 @@ public class RobotContainer {
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
   /* Driver Buttons */
-  public final JoystickButton dY = new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton dB = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton dX = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton dA = new JoystickButton(driver, XboxController.Button.kA.value);
+  public final JoystickButton dY = new JoystickButton(driver, XboxController.Button.kY.value); //Reverse intake
+  private final JoystickButton dB = new JoystickButton(driver, XboxController.Button.kB.value); //Zero gyr0
+  private final JoystickButton dX = new JoystickButton(driver, XboxController.Button.kX.value); //Toggle intake
+  private final JoystickButton dA = new JoystickButton(driver, XboxController.Button.kA.value); //Run intake
   private final JoystickButton dLB = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton dRB = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton dRS = new JoystickButton(driver, XboxController.Button.kRightStick.value);
   private final JoystickButton dLS = new JoystickButton(driver, XboxController.Button.kLeftStick.value);
 
   /* Manipulator Buttons */
-  private final JoystickButton mY = new JoystickButton(manipulator, XboxController.Button.kY.value);
-  private final JoystickButton mB = new JoystickButton(manipulator, XboxController.Button.kB.value);
-  private final JoystickButton mX = new JoystickButton(manipulator, XboxController.Button.kX.value);
-  private final JoystickButton mA = new JoystickButton(manipulator, XboxController.Button.kA.value);
-  private final JoystickButton mLB = new JoystickButton(manipulator, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton mRB = new JoystickButton(manipulator, XboxController.Button.kRightBumper.value);
-  private final JoystickButton mRS = new JoystickButton(manipulator, XboxController.Button.kRightStick.value);
-  private final JoystickButton mLS = new JoystickButton(manipulator, XboxController.Button.kLeftStick.value);
+  private final JoystickButton mY = new JoystickButton(manip, XboxController.Button.kY.value); //Spin up flywheel for top
+  private final JoystickButton mB = new JoystickButton(manip, XboxController.Button.kB.value); //Spin up flywheel for bottom
+  private final JoystickButton mX = new JoystickButton(manip, XboxController.Button.kX.value); //Uptake up
+  private final JoystickButton mA = new JoystickButton(manip, XboxController.Button.kA.value); //Shoot
+  private final JoystickButton mSt = new JoystickButton(manip, XboxController.Button.kStart.value); //Toggle vision
+  private final JoystickButton mLB = new JoystickButton(manip, XboxController.Button.kLeftBumper.value); //Turret left
+  private final JoystickButton mRB = new JoystickButton(manip, XboxController.Button.kRightBumper.value); //Turret right
+  private final JoystickButton mRS = new JoystickButton(manip, XboxController.Button.kRightStick.value); 
+  private final JoystickButton mLS = new JoystickButton(manip, XboxController.Button.kLeftStick.value);
+
+  /* Ball Sensor Strings */
+  public String topBallColor;
+  public String bottomBallColor;
 
   /* Subsystems */
   public final Swerve s_Swerve = new Swerve();
+  public final Turret m_Turret = new Turret();
   public final Intake m_Intake = new Intake();
   public final Uptake m_Uptake = new Uptake();
   public final Shooter m_Shooter = new Shooter();
   public final Vision m_Vision = new Vision();
+  public final BallDetection m_BallDetection = new BallDetection();
   Trajectory trajectory = new Trajectory();
+  UsbCamera usb1 = CameraServer.startAutomaticCapture(0);
 
 
 
@@ -84,10 +94,11 @@ public class RobotContainer {
   public RobotContainer() {
     boolean fieldRelative = true;
     boolean openLoop = true;
-    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, manipulator, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
-    m_Intake.setDefaultCommand(new TeleopIntake(s_Swerve, m_Intake, driver, manipulator));
-    m_Shooter.setDefaultCommand(new TeleopShooter(m_Shooter, m_Vision, driver, manipulator));
+    s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, manip, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
+    m_Intake.setDefaultCommand(new TeleopManip(s_Swerve, m_Intake, m_Turret, m_Uptake, m_Vision, m_Shooter, m_BallDetection, manip, driver));
 
+    usb1.setResolution(160, 120);
+    usb1.setBrightness(25);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -101,7 +112,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     /* Driver Buttons */
-    dY.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
+    dB.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
     dX.whenPressed(new InstantCommand(() -> m_Intake.toggleIntake()));
   }
 

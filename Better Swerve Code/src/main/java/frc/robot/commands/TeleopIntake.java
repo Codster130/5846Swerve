@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 
@@ -51,7 +49,7 @@ public class TeleopIntake extends CommandBase {
     SmartDashboard.putNumber("Relative velocity", relativeVelocity);
     
 
-    intakeAngularVelocity = Math.abs((2*Math.PI*m_Intake.getIntakeVelocity()/12)/60/20);
+    intakeAngularVelocity = Math.abs((2*Math.PI*m_Intake.getIntakeVelocity()/12)/60/6);
     drivetrainForwardVelocity = s_Swerve.getForwardVelocity();
     relativeVelocity = intakeAngularVelocity-drivetrainForwardVelocity;
 
@@ -59,17 +57,20 @@ public class TeleopIntake extends CommandBase {
       intakeIsRunning = !intakeIsRunning;
     }
     
-    if(intakeIsRunning){
-      if(relativeVelocity < Constants.intakeRelativeSpeed-.01&&power<1){
-        power+=.01;
-      }else if(relativeVelocity > Constants.intakeRelativeSpeed+.01&&power>0){
-        power-=.01;
-      }
+    if(driver.getRawButton(XboxController.Button.kY.value)){
+      // if(relativeVelocity < Constants.intakeRelativeSpeed-.01&&power<1){
+      //   power+=.01;
+      // }else if(relativeVelocity > Constants.intakeRelativeSpeed+.01&&power>0){
+      //   power-=.01;
+      // }
+      power = -1;
       
+    }else if(intakeIsRunning){
+      power = 1;
     }else{
       power = 0;
     }
-    m_Intake.setIntakePower(power);
+    m_Intake.setIntakePower(-power);
     SmartDashboard.updateValues();
   }
 

@@ -19,37 +19,28 @@ public class Shooter extends SubsystemBase {
   
   CANSparkMax flywheelMotor;
   CANSparkMax backspinMotor;
-  CANSparkMax turretMotor;
+
   RelativeEncoder flywheelEncoder;
   RelativeEncoder backspinEncoder;
-  RelativeEncoder turretEncoder;
-  SparkMaxPIDController turretPID;
+
 
   /** Creates a new Shooter. */
   public Shooter() {
     flywheelMotor = new CANSparkMax(Constants.flywheelMotorID, MotorType.kBrushless);
     backspinMotor = new CANSparkMax(Constants.backspinMotorID, MotorType.kBrushless);
-    turretMotor = new CANSparkMax(Constants.turretMotorID, MotorType.kBrushless);
-    turretPID = turretMotor.getPIDController();
     flywheelMotor.enableVoltageCompensation(12);
     backspinMotor.enableVoltageCompensation(12);
-    //turretMotor.enableVoltageCompensation(12);
+
+    flywheelMotor.setSmartCurrentLimit(Constants.flywheelStallCurrentLimit, Constants.flywheelFreeCurrentLimit);
+    backspinMotor.setSmartCurrentLimit(Constants.flywheelStallCurrentLimit, Constants.flywheelFreeCurrentLimit);
+
     flywheelEncoder = flywheelMotor.getEncoder();
     backspinEncoder = backspinMotor.getEncoder();
-    turretEncoder = turretMotor.getEncoder();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
-
-  public void setTurretPower(double power){
-    turretMotor.set(power);
-  }
-
-  public double getTurretPosition(){
-    return turretEncoder.getPosition();
   }
 
   public void setFlywheelPower(double power){
@@ -66,24 +57,6 @@ public class Shooter extends SubsystemBase {
 
   public double getBackspinRPM(){
     return backspinEncoder.getVelocity();
-  }
-
-  public void setTurretDegrees(double degrees){
-    double intendedTurretTicks = degrees*.11666666667;
-    double currentTurretTicks = getTurretPosition();
-    double ticksToMove = -(currentTurretTicks-intendedTurretTicks);
-    double turretPower = Math.sqrt(ticksToMove)/Constants.turretAccelRate;
-
-    setTurretPower(turretPower);
-
-    SmartDashboard.putNumber("intended ticks", intendedTurretTicks);
-    SmartDashboard.putNumber("current ticks", currentTurretTicks);
-    SmartDashboard.putNumber("ticks to move", ticksToMove);
-    SmartDashboard.putNumber("turret power", turretPower);
-  }
-
-  public SparkMaxPIDController getTurretPID(){
-    return turretPID;
   }
 
 }

@@ -4,32 +4,39 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.CANSparkMax;
+
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Uptake extends SubsystemBase {
-  
-  //Left and right agitators (bottom wheels entering into uptake)
-  VictorSPX pushUpMotor;
 
   //Front and back belt drivers
-  VictorSPX frontBeltMotor;
-  VictorSPX backBeltMotor;
+  CANSparkMax frontBeltMotor;
+  CANSparkMax backBeltMotor;
 
-  //Left and right flywheel feed motors (top of belt uptake)
-  VictorSPX leftFeedMotor;
-  VictorSPX rightFeedMotor;
+  //Back and front flywheel feed motors (top of belt uptake)
+  CANSparkMax backFeedMotor;
+  CANSparkMax frontFeedMotor;
+
+  //Uptake sensors for indexing
+  DigitalInput bottomLimitSwitch = new DigitalInput(0);
+  
+  
 
   /** Creates a new Uptake. */
   public Uptake() {
     configureUptakeMotors();
-    setVoltageCompensation(12, true);
+    setVoltageCompensation(12);
+    setCurrentLimits();
 
     backBeltMotor.follow(frontBeltMotor);
-    leftFeedMotor.follow(rightFeedMotor);
+    backFeedMotor.follow(frontFeedMotor);
+
   }
 
   @Override
@@ -39,41 +46,40 @@ public class Uptake extends SubsystemBase {
 
   public void configureUptakeMotors(){
     //Initialize uptake motors
-    pushUpMotor = new VictorSPX(Constants.pushUpMotorID);
-    frontBeltMotor = new VictorSPX(Constants.frontBeltMotorID);
-    backBeltMotor = new VictorSPX(Constants.backBeltMotorID);
-    leftFeedMotor = new VictorSPX(Constants.leftFeedMotorID);
-    rightFeedMotor = new VictorSPX(Constants.rightFeedMotorID);
+    frontBeltMotor = new CANSparkMax(Constants.frontBeltMotorID, MotorType.kBrushless);
+    backBeltMotor = new CANSparkMax(Constants.backBeltMotorID, MotorType.kBrushless);
+    backFeedMotor = new CANSparkMax(Constants.backFeedMotorID, MotorType.kBrushless);
+    frontFeedMotor = new CANSparkMax(Constants.frontFeedMotorID, MotorType.kBrushless);
   }
 
-  public void setVoltageCompensation(int voltage, boolean enable){
-    pushUpMotor.configVoltageCompSaturation(voltage);
-    pushUpMotor.enableVoltageCompensation(enable);
+  public void setVoltageCompensation(int voltage){
+    frontBeltMotor.enableVoltageCompensation(voltage);
 
-    frontBeltMotor.configVoltageCompSaturation(voltage);
-    frontBeltMotor.enableVoltageCompensation(enable);
+    backBeltMotor.enableVoltageCompensation(voltage);
 
-    backBeltMotor.configVoltageCompSaturation(voltage);
-    backBeltMotor.enableVoltageCompensation(enable);
+    backFeedMotor.enableVoltageCompensation(voltage);
 
-    leftFeedMotor.configVoltageCompSaturation(voltage);
-    leftFeedMotor.enableVoltageCompensation(enable);
-
-    rightFeedMotor.configVoltageCompSaturation(voltage);
-    rightFeedMotor.enableVoltageCompensation(enable);
+    frontFeedMotor.enableVoltageCompensation(voltage);
   }
 
-  public void setPushUpPower(double power){
-    pushUpMotor.set(ControlMode.PercentOutput, power);
+  public void setCurrentLimits(){
+    frontBeltMotor.setSmartCurrentLimit(Constants.beltStallCurrentLimit, Constants.beltFreeCurrentLimit);
+
+    backBeltMotor.setSmartCurrentLimit(Constants.beltStallCurrentLimit, Constants.beltFreeCurrentLimit);
+
+    backFeedMotor.setSmartCurrentLimit(Constants.feedStallCurrentLimit, Constants.feedFreeCurrentLimit);
+
+    frontFeedMotor.setSmartCurrentLimit(Constants.feedStallCurrentLimit, Constants.feedFreeCurrentLimit);
   }
 
   public void setBeltPower(double power){
-    frontBeltMotor.set(ControlMode.PercentOutput, power);
+    frontBeltMotor.set(power);
   }
 
-  public void feedBall(double rotations){
-    double targetPos = leftFeedMotor.getSelectedSensorPosition()+rotations*4096;
-    leftFeedMotor.set(ControlMode.MotionMagic, targetPos);
+  public void setFeedPower(double power){
+    frontFeedMotor.set(-power);
   }
+
+  
 
 }
