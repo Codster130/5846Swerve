@@ -4,48 +4,32 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.Swerve;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.BallDetection;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
-import com.revrobotics.CANSparkMax;
 
 
 public class TeleopShooter extends CommandBase {
   /** Creates a new TeleopShooter. */
   private Shooter m_Shooter;
   private Vision m_Vision;
-  private Joystick driver;
   private Joystick manip;
-  private PIDController turretAnglePID;
+  private BallDetection m_BallDetection;
+  
 
-  private double intendedTurretAngle;
-  private double intendedTurretTicks;
-  private double turretPower;
+  private double desiredFlywheelRPM, desiredBackspinRPM, actualFlywheelRPM, actualBackspinRPM, flywheelPower, backspinPower;
+  private boolean spinUpShooter = false;
 
-  public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
-  //0.20408163265 degrees per tick or 4.9 ticks per degree
-
-  public TeleopShooter(Shooter m_Shooter, Vision m_Vision, Joystick driver, Joystick manip) {
+  public TeleopShooter(Shooter m_Shooter, Vision m_Vision, BallDetection M_BallDetection, Joystick driver, Joystick manip) {
     this.m_Shooter = m_Shooter;
     this.m_Vision = m_Vision;
-    this.driver = driver;
+    this.m_BallDetection = m_BallDetection;
     this.manip = manip;
-    turretAnglePID = new PIDController(.05, 0, 0);
-    
-    kP = 5e-5; 
-    kI = 1e-6;
-    kD = 0; 
-    kIz = 0; 
-    kFF = 0.000156; 
-    kMaxOutput = 1; 
-    kMinOutput = -1;
-    maxRPM = 5700;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Shooter);
@@ -63,30 +47,43 @@ public class TeleopShooter extends CommandBase {
     double y = m_Vision.getLimelightY();
     double area = m_Vision.getLimelightArea();
 
-    if(manip.getRawButton(XboxController.Button.kLeftBumper.value)){
-      intendedTurretAngle+=.5;
-    }else if(manip.getRawButton(XboxController.Button.kRightBumper.value)){
-      intendedTurretAngle-=.5;
+    desiredFlywheelRPM = SmartDashboard.getNumber("Desired Flywheel RPM", 100);
+    desiredBackspinRPM = SmartDashboard.getNumber("Desired Backspin RPM", 100);
+    
+    actualFlywheelRPM = m_Shooter.getFlywheelRPM();
+    actualBackspinRPM = m_Shooter.getBackspinRPM();
+
+    if(manip.getRawButtonPressed(XboxController.Button.kX.value)){
+      spinUpShooter = !spinUpShooter;
     }
 
-    if(intendedTurretAngle>=180){
-      intendedTurretAngle-=360;
-    }else if(intendedTurretAngle<-180){
-      intendedTurretAngle+=360;
+    if(spinUpShooter){
+      if(actualFlywheelRPM < desiredFlywheelRPM-.01&&flywheelPower<1){
+        flywheelPower+=.01;
+      }else if(actualFlywheelRPM > desiredFlywheelRPM+.01&& flywheelPower>0){
+        flywheelPower-=.01;
+      }
+    }else{
+      flywheelPower = 0;
     }
 
-    m_Shooter.setTurretDegrees(intendedTurretAngle);
-
-    m_Shooter.setBackspinPower(.25);
-    m_Shooter.setFlywheelPower(.25);
-    m_Shooter.getBackspinRPM();
-    m_Shooter.getFlywheelRPM();
+    if(spinUpShooter){
+      if(actualBackspinRPM < desiredBackspinRPM-.01&&backspinPower<1){
+        flywheelPower+=.01;
+      }else if(actualBackspinRPM > desiredBackspinRPM+.01&& backspinPower>0){
+        backspinPower-=.01;
+      }
+    }else{
+      backspinPower = 0;
+    }
+    
+    SmartDashboard.putNumber("Actual Flywheel RPM", actualFlywheelRPM);
+    SmartDashboard.putNumber("Actual Backspin RPM", actualBackspinRPM);
 
     SmartDashboard.putNumber("LimelightX", x);
     SmartDashboard.putNumber("LimelightY", y);
     SmartDashboard.putNumber("LimelightArea", area);
 
-    SmartDashboard.putNumber("Turret Angle", intendedTurretAngle);
     SmartDashboard.updateValues();
 
   }

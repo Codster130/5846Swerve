@@ -23,9 +23,10 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
-    leftIntakeSolenoid = new DoubleSolenoid(13, PneumaticsModuleType.REVPH, 0, 1);
-    rightIntakeSolenoid = new DoubleSolenoid(13, PneumaticsModuleType.REVPH, 2, 3);
+    leftIntakeSolenoid = new DoubleSolenoid(13, PneumaticsModuleType.REVPH, 8, 9);
+    rightIntakeSolenoid = new DoubleSolenoid(13, PneumaticsModuleType.REVPH, 10, 11);
     intakeMotor = new CANSparkMax(Constants.intakeMotorID, MotorType.kBrushless);
+    intakeMotor.setSmartCurrentLimit(Constants.intakeStallCurrentLimit, Constants.intakeFreeCurrentLimit);
     leftIntakeSolenoid.set(Value.kReverse);
     rightIntakeSolenoid.set(Value.kReverse);
   }

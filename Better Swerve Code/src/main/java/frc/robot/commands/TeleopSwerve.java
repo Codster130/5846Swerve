@@ -8,6 +8,8 @@ import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -43,13 +45,16 @@ public class TeleopSwerve extends CommandBase {
     }
 
     @Override
-    public void initialize(){}
+    public void initialize(){s_Swerve.zeroGyro();}
 
     @Override
     public void execute() {
         double d_yAxis = -drive.getRawAxis(translationAxis);
         double d_xAxis = -drive.getRawAxis(strafeAxis);
         double d_rAxis = -drive.getRawAxis(rotationAxis);
+
+        d_yAxis = MathUtil.clamp(d_yAxis, -.5, .5); 
+        d_xAxis = MathUtil.clamp(d_xAxis, -.5, .5);
         
         /* Deadbands */
         d_yAxis = (Math.abs(d_yAxis) < Constants.stickDeadband) ? 0 : d_yAxis;
