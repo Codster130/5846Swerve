@@ -16,9 +16,12 @@ public class Vision extends SubsystemBase {
   NetworkTableEntry tx;
   NetworkTableEntry ty;
 
+  NetworkTable table;
+  
+
   /** Creates a new Vision. */
   public Vision() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    table = NetworkTableInstance.getDefault().getTable("limelight");
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     ta = table.getEntry("ta");
@@ -40,5 +43,9 @@ public class Vision extends SubsystemBase {
 
   public double getLimelightArea(){
     return ta.getDouble(0.0);
+  }
+
+  public void setLimelightLED(double ledOn){
+    table.getEntry("ledMode").setNumber(ledOn);
   }
 }

@@ -43,6 +43,8 @@ import frc.robot.subsystems.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  
   /* Controllers */
   private final Joystick driver = new Joystick(0);
   private final Joystick manip = new Joystick(1);
@@ -54,7 +56,7 @@ public class RobotContainer {
 
   /* Driver Buttons */
   public final JoystickButton dY = new JoystickButton(driver, XboxController.Button.kY.value); //Reverse intake
-  private final JoystickButton dB = new JoystickButton(driver, XboxController.Button.kB.value); //Zero gyr0
+  private final JoystickButton dB = new JoystickButton(driver, XboxController.Button.kB.value); //Zero gyro
   private final JoystickButton dX = new JoystickButton(driver, XboxController.Button.kX.value); //Toggle intake
   private final JoystickButton dA = new JoystickButton(driver, XboxController.Button.kA.value); //Run intake
   private final JoystickButton dLB = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
@@ -73,9 +75,6 @@ public class RobotContainer {
   private final JoystickButton mRS = new JoystickButton(manip, XboxController.Button.kRightStick.value); 
   private final JoystickButton mLS = new JoystickButton(manip, XboxController.Button.kLeftStick.value);
 
-  /* Ball Sensor Strings */
-  public String topBallColor;
-  public String bottomBallColor;
 
   /* Subsystems */
   public final Swerve s_Swerve = new Swerve();
@@ -84,6 +83,7 @@ public class RobotContainer {
   public final Uptake m_Uptake = new Uptake();
   public final Shooter m_Shooter = new Shooter();
   public final Vision m_Vision = new Vision();
+  public final Climber m_Climber = new Climber();
   public final BallDetection m_BallDetection = new BallDetection();
   Trajectory trajectory = new Trajectory();
   UsbCamera usb1 = CameraServer.startAutomaticCapture(0);
@@ -95,7 +95,7 @@ public class RobotContainer {
     boolean fieldRelative = true;
     boolean openLoop = true;
     s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, manip, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
-    m_Intake.setDefaultCommand(new TeleopManip(s_Swerve, m_Intake, m_Turret, m_Uptake, m_Vision, m_Shooter, m_BallDetection, manip, driver));
+    m_Intake.setDefaultCommand(new TeleopManip(s_Swerve, m_Intake, m_Turret, m_Uptake, m_Vision, m_Shooter, m_Climber, m_BallDetection, manip, driver));
 
     usb1.setResolution(160, 120);
     usb1.setBrightness(25);
@@ -124,6 +124,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     
-    return new BlueRightAuto(s_Swerve);
+    return new GeneralAuto(s_Swerve, m_Shooter, m_Turret, m_Uptake);
   }
 }

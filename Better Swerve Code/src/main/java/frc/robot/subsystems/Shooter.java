@@ -44,19 +44,27 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setFlywheelPower(double power){
-    flywheelMotor.set(power);
+    flywheelMotor.set(-power);
   }
 
   public double getFlywheelRPM(){
-    return flywheelEncoder.getVelocity();
+    return -flywheelEncoder.getVelocity();
   }
 
   public void setBackspinPower(double power){
-    backspinMotor.set(power);
+    backspinMotor.set(-power);
   }
 
   public double getBackspinRPM(){
-    return backspinEncoder.getVelocity();
+    return -backspinEncoder.getVelocity();
+  }
+
+  public RelativeEncoder getFlywheelEncoder(){
+    return flywheelMotor.getEncoder();
+  }
+
+  public RelativeEncoder getBackspinEncoder(){
+    return backspinMotor.getEncoder();
   }
 
 }

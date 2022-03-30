@@ -11,6 +11,11 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
     public static final double stickDeadband = 0.1;
 
+
+    /*Climber Constants */
+    public static int rightClimberMotorId = 22;
+    public static int leftClimberMotorId = 23;
+
     /* Intake Constants */
     public static int intakeMotorID = 20; //TODO: Set the correct ID
 
@@ -31,8 +36,8 @@ public final class Constants {
     public static int feedFreeCurrentLimit = 10;
 
     /* Shooter Constants */
-    public static int flywheelMotorID = 18; //TODO: Set the correct ID
-    public static int backspinMotorID = 21; //TODO: Set the correct ID
+    public static int flywheelMotorID = 21; //TODO: Set the correct ID
+    public static int backspinMotorID = 18; //TODO: Set the correct ID
     public static int flywheelStallCurrentLimit = 45;
     public static int flywheelFreeCurrentLimit = 30;
 
