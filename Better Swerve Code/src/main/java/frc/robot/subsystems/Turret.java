@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
@@ -29,14 +30,19 @@ public class Turret extends PIDSubsystem {
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
-    turretMotor.set(output);
+    turretMotor.set(MathUtil.clamp(-output, -.5, .5));
     SmartDashboard.putNumber("PID Output", output);
   }
 
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
-    return turretEncoder.getPosition();
+    return -turretEncoder.getPosition();
   }
+
+  public void setPosition(double position){
+    turretEncoder.setPosition(position);
+  }
+  
 
 }

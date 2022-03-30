@@ -33,10 +33,6 @@ public class Uptake extends SubsystemBase {
     configureUptakeMotors();
     setVoltageCompensation(12);
     setCurrentLimits();
-
-    backBeltMotor.follow(frontBeltMotor);
-    backFeedMotor.follow(frontFeedMotor);
-
   }
 
   @Override
@@ -74,10 +70,12 @@ public class Uptake extends SubsystemBase {
 
   public void setBeltPower(double power){
     frontBeltMotor.set(power);
+    backBeltMotor.set(power);
   }
 
   public void setFeedPower(double power){
     frontFeedMotor.set(-power);
+    backFeedMotor.set(-power);
   }
 
   

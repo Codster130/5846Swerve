@@ -53,8 +53,8 @@ public class TeleopSwerve extends CommandBase {
         double d_xAxis = -drive.getRawAxis(strafeAxis);
         double d_rAxis = -drive.getRawAxis(rotationAxis);
 
-        d_yAxis = MathUtil.clamp(d_yAxis, -.5, .5); 
-        d_xAxis = MathUtil.clamp(d_xAxis, -.5, .5);
+        d_yAxis = MathUtil.clamp(d_yAxis, -1, 1); 
+        d_xAxis = MathUtil.clamp(d_xAxis, -1, 1);
         
         /* Deadbands */
         d_yAxis = (Math.abs(d_yAxis) < Constants.stickDeadband) ? 0 : d_yAxis;
