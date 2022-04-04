@@ -95,7 +95,7 @@ public class TeleopManip extends CommandBase {
     relativeVelocity = 0;
     intakePower = 0;
 
-    intendedTurretAngle = 0;
+    intendedTurretAngle = 179;
     intendedTurretTicks = 0;
     wrongBallAngleStorage = 0;
     lastBallColorWrong = false;
@@ -108,7 +108,7 @@ public class TeleopManip extends CommandBase {
     y = 0;
     area = 0;
 
-    m_Turret.setPosition(1);
+    m_Turret.setPosition(179*.1945);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -23,21 +23,21 @@ public class Turret extends PIDSubsystem {
         // The PIDController used by the subsystem
         new PIDController(.2, 0, 0));
     getController().setTolerance(1, 1);
-    setSetpoint(0);
+    setSetpoint(179);
     turretMotor.setSmartCurrentLimit(Constants.turretStallCurrentLimit, Constants.turretFreeCurrentLimit);
   }
 
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
-    turretMotor.set(MathUtil.clamp(-output, -.5, .5));
+    turretMotor.set(MathUtil.clamp(output, -.75, .75));
     SmartDashboard.putNumber("PID Output", output);
   }
 
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
-    return -turretEncoder.getPosition();
+    return turretEncoder.getPosition();
   }
 
   public void setPosition(double position){
