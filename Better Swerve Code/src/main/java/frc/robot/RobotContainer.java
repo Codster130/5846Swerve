@@ -89,13 +89,13 @@ public class RobotContainer {
   public final Climber m_Climber = new Climber();
   public final BallDetection m_BallDetection = new BallDetection();
   Trajectory trajectory = new Trajectory();
-  UsbCamera usb1 = CameraServer.startAutomaticCapture(0);
+  //UsbCamera usb1 = CameraServer.startAutomaticCapture(0);
 
   // A simple auto routine that drives forward a specified distance, and then stops.
-  private final Command m_simpleAuto = new TwoBallAuto(s_Swerve, m_Shooter, m_Turret, m_Uptake, m_Intake);
+  private final Command m_OneBall = new OneBallAuto(s_Swerve, m_Shooter, m_Turret, m_Uptake, m_Intake);
 
   // A complex auto routine that drives forward, drops a hatch, and then drives backward.
-  private final Command m_complexAuto = new exampleAuto(s_Swerve);
+  private final Command m_TwoBall = new TwoBallAuto(s_Swerve, m_Shooter, m_Turret, m_Uptake, m_Intake);
 
   // A chooser for autonomous commands
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -109,15 +109,16 @@ public class RobotContainer {
     s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, driver, manip, translationAxis, strafeAxis, rotationAxis, fieldRelative, openLoop));
     m_Intake.setDefaultCommand(new TeleopManip(s_Swerve, m_Intake, m_Turret, m_Uptake, m_Vision, m_Shooter, m_Climber, m_BallDetection, manip, driver));
 
-    usb1.setResolution(160, 120);
-    usb1.setBrightness(25);
+    // usb1.setResolution(80, 60);
+    // usb1.setBrightness(25);
 
     // Add commands to the autonomous command chooser
-    m_chooser.setDefaultOption("Simple Auto", m_simpleAuto);
-    m_chooser.addOption("Complex Auto", m_complexAuto);
+    m_chooser.setDefaultOption("One Ball Low", m_OneBall);
+    m_chooser.addOption("Two Ball High", m_TwoBall);
 
     // Put the chooser on the dashboard
     SmartDashboard.putData(m_chooser); 
+    SmartDashboard.updateValues();
 
 
     // Configure the button bindings
@@ -141,47 +142,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    // 1. Create trajectory settings
-    // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-    //   AutoConstants.kMaxSpeedMetersPerSecond,
-    //   AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-    //           .setKinematics(Constants.Swerve.swerveKinematics);
-
-    //           // 2. Generate trajectory
-    //     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-    //       new Pose2d(0, 0, new Rotation2d(0)),
-    //       List.of(
-    //               new Translation2d(1, .1)),
-    //       new Pose2d(2, 0, Rotation2d.fromDegrees(180)),
-    //       trajectoryConfig);
-
-    //       // 3. Define PID controllers for tracking trajectory
-    //     PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-    //     PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-    //     ProfiledPIDController thetaController = new ProfiledPIDController(
-    //             AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    //     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    //      // 4. Construct command to follow trajectory
-    //      SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-    //       trajectory,
-    //       s_Swerve::getPose,
-    //       Constants.Swerve.swerveKinematics,
-    //       xController,
-    //       yController,
-    //       thetaController,
-    //       s_Swerve::setModuleStates,
-    //       s_Swerve);
-
-    //       // 5. Add some init and wrap-up, and return everything
-    //     return new SequentialCommandGroup(
-    //       new InstantCommand(() -> s_Swerve.resetOdometry(trajectory.getInitialPose())),
-    //       swerveControllerCommand,
-    //       new InstantCommand(() -> s_Swerve.drive(0, 0, 0, false)));
-
+  public Command getAutonomousCommand() {  
     return m_chooser.getSelected();
-    // return new GeneralAuto(s_Swerve, m_Shooter, m_Turret, m_Uptake);
   }
 }
