@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.BallDetection;
@@ -36,6 +37,8 @@ public class TeleopManip extends CommandBase {
   private boolean uptakeRunning = false;
   private double desiredFlywheelRPM, desiredBackspinRPM, actualFlywheelRPM, actualBackspinRPM, flywheelPower, backspinPower;
   private boolean spinUpShooter = false;
+  private boolean flywheelAtSpeed = false;
+  private boolean backspinAtSpeed = false;
 
   private boolean intakeIsRunning;
   private double intakeAngularVelocity;
@@ -88,6 +91,8 @@ public class TeleopManip extends CommandBase {
     flywheelPower = 0;
     backspinPower = 0;
     spinUpShooter = false;
+    flywheelAtSpeed = false;
+    backspinAtSpeed = false;
 
     intakeIsRunning = false;
     intakeAngularVelocity = 0;
@@ -100,7 +105,8 @@ public class TeleopManip extends CommandBase {
     wrongBallAngleStorage = 0;
     lastBallColorWrong = false;
     hasTwoBalls = false;
-    m_Turret.enable();
+    //m_Turret.enable();
+    m_Turret.disable();
 
     automatedShootingOn = false;
     automatedTrackingOn = false;
@@ -126,6 +132,9 @@ public class TeleopManip extends CommandBase {
 
     hasTwoBalls = !m_BallDetection.getTopColor().equals("Unknown")&& m_BallDetection.seesBottomBall();
 
+    flywheelAtSpeed = Math.abs(desiredFlywheelRPM-actualFlywheelRPM)<40 && actualFlywheelRPM>5;
+    backspinAtSpeed = Math.abs(desiredBackspinRPM-actualBackspinRPM)<40 && actualBackspinRPM>5;
+
     /****************\
     |Climber Controls| 
     \****************/
@@ -146,6 +155,7 @@ public class TeleopManip extends CommandBase {
     area = m_Vision.getLimelightArea();
 
     if(automatedTrackingOn){
+
       m_Vision.setLimelightLED(3);
     }else{
       m_Vision.setLimelightLED(1);
@@ -179,15 +189,16 @@ public class TeleopManip extends CommandBase {
     //Tarmac edge: 2400, 3360; Low goal: 750, 2500; Bottom wall: 2080, 2880
     if(manip.getRawButtonPressed(XboxController.Button.kLeftStick.value)){
       //high goal RPMs
-      desiredFlywheelRPM = 2080;
-      desiredBackspinRPM = 2880;
+      desiredFlywheelRPM = 2080*1.0;
+      desiredBackspinRPM = 2880*1.14;
       spinUpShooter = true;
+
     }
 
     if(manip.getRawButtonPressed(XboxController.Button.kRightStick.value)){
       //low goal RPMs
       desiredFlywheelRPM = 750;
-      desiredBackspinRPM = 1500;
+      desiredBackspinRPM = 1600;
       spinUpShooter = true;
     }
 
@@ -197,30 +208,28 @@ public class TeleopManip extends CommandBase {
     if(manip.getRawButtonPressed(XboxController.Button.kY.value)){
       spinUpShooter = !spinUpShooter;
     }else if(hasTwoBalls&&automatedShootingOn){
-      spinUpShooter = true;
+      spinUpShooter = true; 
     }
-
-    if(m_BallDetection.wrongTopBall()&&automatedShootingOn){
-      desiredFlywheelRPM = 500;
-      desiredBackspinRPM = 1000;
-    }
-
 
     if(spinUpShooter){
-      if(actualFlywheelRPM < desiredFlywheelRPM&&flywheelPower<1){
-        flywheelPower+=MathUtil.clamp(Math.abs(actualFlywheelRPM-desiredFlywheelRPM)/100000, .0001, .01);
-      }else if(actualFlywheelRPM > desiredFlywheelRPM&& flywheelPower>0){
-        flywheelPower-=MathUtil.clamp(Math.abs(actualFlywheelRPM-desiredFlywheelRPM)/100000, .0001, .01);
+      if(!flywheelAtSpeed){
+        if(actualFlywheelRPM < desiredFlywheelRPM&&flywheelPower<1){
+          flywheelPower+=MathUtil.clamp(Math.abs(actualFlywheelRPM-desiredFlywheelRPM)/100000, .0001, .01);
+        }else if(actualFlywheelRPM > desiredFlywheelRPM&& flywheelPower>0){
+          flywheelPower-=MathUtil.clamp(Math.abs(actualFlywheelRPM-desiredFlywheelRPM)/100000, .0001, .01);
+        }
       }
     }else{
         flywheelPower = 0;
     }
 
     if(spinUpShooter){
-      if(actualBackspinRPM < desiredBackspinRPM&&backspinPower<1){
-        backspinPower+=MathUtil.clamp(Math.abs(actualBackspinRPM-desiredBackspinRPM)/100000, .0001, .01);
-      }else if(actualBackspinRPM > desiredBackspinRPM&&backspinPower>0){
-        backspinPower-=MathUtil.clamp(Math.abs(actualBackspinRPM-desiredBackspinRPM)/100000, .0001, .01);
+      if(!backspinAtSpeed){
+        if(actualBackspinRPM < desiredBackspinRPM&&backspinPower<1){
+          backspinPower+=MathUtil.clamp(Math.abs(actualBackspinRPM-desiredBackspinRPM)/100000, .0001, .01);
+        }else if(actualBackspinRPM > desiredBackspinRPM&&backspinPower>0){
+          backspinPower-=MathUtil.clamp(Math.abs(actualBackspinRPM-desiredBackspinRPM)/100000, .0001, .01);
+        }
       }
     }else{
         backspinPower = 0;
@@ -239,6 +248,7 @@ public class TeleopManip extends CommandBase {
 
     if(hasTwoBalls&&automatedShootingOn){
       uptakeRunning = false;
+      
     }
 
     SmartDashboard.putString("Color", m_BallDetection.getTopColor());
@@ -251,7 +261,7 @@ public class TeleopManip extends CommandBase {
       m_Uptake.setBeltPower(0);
     }
 
-    if(manip.getRawButton(XboxController.Button.kA.value) && Math.abs(desiredFlywheelRPM-actualFlywheelRPM)<20 && Math.abs(desiredBackspinRPM-actualBackspinRPM)<20 && actualBackspinRPM+actualFlywheelRPM>20){
+    if(manip.getRawButton(XboxController.Button.kA.value) && ((flywheelAtSpeed&&backspinAtSpeed)||!automatedShootingOn)){
       m_Uptake.setFeedPower(1);
     }else{
       m_Uptake.setFeedPower(0);
@@ -261,8 +271,6 @@ public class TeleopManip extends CommandBase {
     |Turret Controls| 
     \***************/ 
     
-
-    if(!automatedShootingOn){
       if(manip.getRawButton(XboxController.Button.kLeftBumper.value)){
         intendedTurretAngle-=1;
       }else if(manip.getRawButton(XboxController.Button.kRightBumper.value)){
@@ -272,13 +280,11 @@ public class TeleopManip extends CommandBase {
       }else if(manip.getRawAxis(XboxController.Axis.kRightTrigger.value)>.01){
         intendedTurretAngle+=manip.getRawAxis(XboxController.Axis.kRightTrigger.value)*5;
       }
-    } 
+    
     
     else if (automatedTrackingOn&&automatedShootingOn){
       if(x!=0){
         intendedTurretAngle+=x/5;
-      }else if(x==0){
-        intendedTurretAngle+=3;
       }
     }
 
@@ -305,6 +311,17 @@ public class TeleopManip extends CommandBase {
     intendedTurretTicks = intendedTurretAngle*.1945;
 
     m_Turret.setSetpoint(intendedTurretTicks);
+
+
+    if(DriverStation.getMatchTime()<=15){
+      driver.setRumble(RumbleType.kLeftRumble, .5);
+      driver.setRumble(RumbleType.kRightRumble, .5);
+    }
+
+    if(DriverStation.getMatchTime()<=13){
+      driver.setRumble(RumbleType.kLeftRumble, 0);
+      driver.setRumble(RumbleType.kRightRumble, 0);
+    }
 
     SmartDashboard.putNumber("Flywheel target", desiredFlywheelRPM);
     SmartDashboard.putNumber("Backspin power", backspinPower);

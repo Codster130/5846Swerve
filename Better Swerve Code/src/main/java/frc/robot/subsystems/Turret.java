@@ -22,8 +22,7 @@ public class Turret extends PIDSubsystem {
     super(
         // The PIDController used by the subsystem
         new PIDController(.2, 0, 0));
-    getController().setTolerance(1, 1);
-    setSetpoint(179);
+    setSetpoint(179*.1945);
     turretMotor.setSmartCurrentLimit(Constants.turretStallCurrentLimit, Constants.turretFreeCurrentLimit);
   }
 

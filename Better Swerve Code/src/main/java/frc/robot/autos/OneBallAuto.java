@@ -36,7 +36,7 @@ import frc.robot.subsystems.Uptake;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoBallAuto extends SequentialCommandGroup {
+public class OneBallAuto extends SequentialCommandGroup {
   Swerve s_Swerve;
   Uptake m_Uptake;
   Turret m_Turret;
@@ -44,7 +44,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
   Intake m_Intake;
   
   /** Creates a new BlueRightAuto. */
-  public TwoBallAuto(Swerve s_Swerve, Shooter m_Shooter, Turret m_Turret, Uptake m_Uptake, Intake m_Intake) {
+  public OneBallAuto(Swerve s_Swerve, Shooter m_Shooter, Turret m_Turret, Uptake m_Uptake, Intake m_Intake) {
     this.s_Swerve = s_Swerve;
     this.m_Shooter = m_Shooter;
     this.m_Turret = m_Turret;
@@ -66,7 +66,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
           new Pose2d(0, 0, new Rotation2d(0)),
           List.of(
                   new Translation2d(.5, .01)),
-          new Pose2d(1, 0, Rotation2d.fromDegrees(0)),
+          new Pose2d(2.5, 0, Rotation2d.fromDegrees(0)),
           trajectoryConfig);
 
         Trajectory trajectory2 = TrajectoryGenerator.generateTrajectory(
@@ -128,38 +128,13 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
      addCommands(
                 //Enable and position turret
-                new InstantCommand(()-> m_Turret.enable()),
+                new InstantCommand(()-> m_Turret.disable()),
                 new InstantCommand(() -> m_Turret.setSetpoint(179*.1945)), 
                 
-                //Drive towards ball
-                new SequentialCommandGroup(
-                  new InstantCommand(() -> s_Swerve.resetOdometry(trajectory1.getInitialPose())), swerveControllerCommand1,
-                  new InstantCommand(() -> s_Swerve.drive(0, 0, 0, false))
-                ),
-                
-                //Deploy+start intake, start uptake
-                new InstantCommand(() -> m_Intake.setIntakePower(1)),
-                new InstantCommand(() -> m_Intake.toggleIntake()),
-                
-                new InstantCommand(() -> m_Uptake.setBeltPower(1)),
-                new WaitCommand(2),
-
-                //Stop and retract intake
-                new InstantCommand(() -> m_Intake.setIntakePower(0)),
-                new InstantCommand(() -> m_Intake.toggleIntake()),
-
-                //Drive to shooting position
-                new SequentialCommandGroup(
-                  new InstantCommand(() -> s_Swerve.resetOdometry(trajectory2.getInitialPose())), swerveControllerCommand2,
-                  new InstantCommand(() -> s_Swerve.drive(0, 0, 0, false))
-                ),
-                new WaitCommand(1),
-                new InstantCommand(() -> m_Uptake.setBeltPower(0)),                
-
                 //Rev up shooter
-                new InstantCommand(() -> m_Shooter.setFlywheelPower(.38)), 
-                new InstantCommand(() -> m_Shooter.setBackspinPower(.65)),
-                new WaitCommand(1), 
+                new InstantCommand(() -> m_Shooter.setFlywheelPower(.145)), //.145, .38
+                new InstantCommand(() -> m_Shooter.setBackspinPower(.3)), //.3, .35
+                new WaitCommand(3), 
 
                 //Shoot
                 new InstantCommand(() -> m_Uptake.setBeltPower(1)),
@@ -172,14 +147,12 @@ public class TwoBallAuto extends SequentialCommandGroup {
                 new InstantCommand(() -> m_Uptake.setBeltPower(0)),
                 new InstantCommand(() -> m_Shooter.setBackspinPower(0)),
 
-                //Drive back out
+                //Drive out
                 new SequentialCommandGroup(
-                  new InstantCommand(() -> s_Swerve.resetOdometry(trajectory3.getInitialPose())), swerveControllerCommand3,
+                  new InstantCommand(() -> s_Swerve.resetOdometry(trajectory1.getInitialPose())), swerveControllerCommand1,
                   new InstantCommand(() -> s_Swerve.drive(0, 0, 0, false))
                  )
                 
-                // new WaitCommand(3),
-                // new InstantCommand(() -> s_Swerve.drive(0, 0, 0, false))
     );
   }
 }

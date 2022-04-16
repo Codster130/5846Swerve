@@ -49,6 +49,8 @@ public class TeleopSwerve extends CommandBase {
 
     @Override
     public void execute() {
+        fieldRelative = !drive.getRawButton(XboxController.Button.kLeftBumper.value);
+
         double d_yAxis = -drive.getRawAxis(translationAxis);
         double d_xAxis = -drive.getRawAxis(strafeAxis);
         double d_rAxis = -drive.getRawAxis(rotationAxis);
